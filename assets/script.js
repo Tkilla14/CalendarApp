@@ -1,28 +1,22 @@
-var btns = document.querySelectorAll(".saveBtn");
 var textArea = document.querySelectorAll(".description");
-var timeBlock = document.querySelectorAll = ('.container-lg');
+var timeBlock = document.querySelector('#time-blocks');
 var color = ""
-today = dayjs();
+var today = dayjs();
 var displayToday = document.querySelector("#currentDay");
-
-const startDay = 9;
 
 $(function () {
 // Determining function for time of day 
-  var time = i + startDay
+  var time
 
   for (var i = 9; i < 18; i++) {
-    if (time > 9) {
-      time -= 17;
+    if (i < 12) {
+      time = i + "AM"
+    } else if (i == 12) {
+      time = i + "PM"
+    } else {
+      time = i - 12 + "PM"
     }
 
-    var now = `hour-${time}`;
-
-    let afterNoon = "AM"
-    if (i >= 12) {
-      afterNoon = "PM"
-    }
-  }
   // Presenting the color for the time of day
   if (i < dayjs().hour()) {
     color = "past";
@@ -35,12 +29,11 @@ $(function () {
   $(displayToday).text(today.format("dddd, MMMM DD"));
 
   // Building actual calendar with parameters from above
-  var textID = (time + afterNoon);
-  var textArea = JSON.parse(localStorage.getItem(textID));
 
-  if (time < 18) {
-    var row = `<div id="hour-${now}" class="row time-block ${color}">
-    <div class="col-2 col-md-1 hour text-center py-3">${time}${afterNoon}</div>
+  var textArea = JSON.parse(localStorage.getItem("hour-"+i)) || '';
+
+    var row = `<div id="hour-${i}" class="row time-block ${color}">
+    <div class="col-2 col-md-1 hour text-center py-3">${time}</div>
     <textarea class="col-8 col-md-10 description" rows="3">${textArea}</textarea>
     <button class="btn saveBtn col-2 col-md-1" aria-label="save">
       <i class="fas fa-save" aria-hidden="true"></i>
@@ -51,9 +44,10 @@ $(function () {
 
   }
 // Save button
-  $(timeBlock).on("click", clickSave, function (event) {
-    var saveTextArea = $(this).siblings('textarea').val();
-    var saveTextID = $(this).siblings('.hour').text();
+  $(timeBlock).on("click", $('.btn'), function (event) {
+    console.log($(this))
+    var saveTextArea = $(event.target).siblings('textarea').val();
+    var saveTextID = $(event.target).parent().attr('id')
     localStorage.setItem(saveTextID, JSON.stringify(saveTextArea));
   })
 
